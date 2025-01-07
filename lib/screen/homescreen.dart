@@ -49,63 +49,37 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // void _showLoginDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         shape:
-  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-  //         title: Row(
-  //           children: [
-  //             Icon(Icons.lock, color: Colors.orange),
-  //             SizedBox(width: 10),
-  //             Text('Login'),
-  //           ],
-  //         ),
-  //         content: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             TextField(
-  //               decoration: InputDecoration(
-  //                 labelText: 'Email',
-  //                 prefixIcon: Icon(Icons.email),
-  //                 border: OutlineInputBorder(),
-  //               ),
-  //             ),
-  //             SizedBox(height: 15),
-  //             TextField(
-  //               obscureText: true,
-  //               decoration: InputDecoration(
-  //                 labelText: 'Kata Sandi',
-  //                 prefixIcon: Icon(Icons.lock),
-  //                 border: OutlineInputBorder(),
-  //               ),
-  //             ),
-  //             SizedBox(height: 15),
-  //             ElevatedButton(
-  //               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //               child: Text('Masuk'),
-  //             ),
-  //             TextButton(
-  //               onPressed: () {},
-  //               child: Text('Lupa kata sandi kamu?'),
-  //             ),
-  //             Divider(),
-  //             ElevatedButton.icon(
-  //               icon: Icon(Icons.account_circle),
-  //               label: Text('Masuk dengan Google'),
-  //               onPressed: () {},
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> updateNote(
+      String noteId, Map<String, dynamic> updatedData) async {
+    try {
+      await noteService.updateNote(
+          id: noteId,
+          title: updatedData['title'],
+          content: updatedData['content'],
+          date: DateTime.now());
+      List<Note> updatedNotes = await noteService.getNotes();
+
+// Update UI dengan data terbaru
+      setState(() {
+        notes = updatedNotes
+            .map((note) => note.toMap())
+            .cast<Map<String, dynamic>>()
+            .toList();
+      });
+      fetchNotes();
+    } catch (e) {
+      print('Error updating note: $e');
+    }
+  }
+
+  Future<void> deleteNote(String noteId) async {
+    try {
+      await noteService.deleteNote(id: noteId);
+      fetchNotes();
+    } catch (e) {
+      print('Error deleting note: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,12 +264,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       note['content'],
                       style: TextStyle(color: Colors.white70),
                     ),
-                    trailing: Text(
-                      DateTime.fromMillisecondsSinceEpoch(note['date'])
-                          .toLocal()
-                          .toString()
-                          .split(' ')[0],
-                      style: TextStyle(color: Colors.white54, fontSize: 12),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.white54),
+                          onPressed: () {
+                            // Show edit dialog or navigate to edit page
+                            final updatedData = {
+                              'title': 'Updated Title',
+                              'content': 'Updated Content'
+                            };
+                            updateNote(note['\$id'], updatedData);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.redAccent),
+                          onPressed: () {
+                            deleteNote(note['\$id']);
+                          },
+                        ),
+                      ],
                     ),
                     onTap: () {
                       Navigator.push(

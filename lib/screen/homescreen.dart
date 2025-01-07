@@ -1,12 +1,13 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:gkeep/auth/login_page.dart';
+import 'package:gkeep/service/appwrite_service.dart';
 import 'package:gkeep/models/notemodels.dart';
 import 'package:gkeep/screen/drawingscreen.dart';
 import 'package:gkeep/screen/note.dart';
 import 'package:gkeep/sidebar/arsippage.dart';
 import 'package:gkeep/sidebar/setting.dart';
 import 'package:gkeep/sidebar/sampah.dart';
-import 'package:gkeep/service/appwrite_service.dart';
 import 'package:gkeep/service/appwrite_config.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -48,63 +49,63 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _showLoginDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          title: Row(
-            children: [
-              Icon(Icons.lock, color: Colors.orange),
-              SizedBox(width: 10),
-              Text('Login'),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 15),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Kata Sandi',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 15),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Masuk'),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: Text('Lupa kata sandi kamu?'),
-              ),
-              Divider(),
-              ElevatedButton.icon(
-                icon: Icon(Icons.account_circle),
-                label: Text('Masuk dengan Google'),
-                onPressed: () {},
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _showLoginDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape:
+  //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+  //         title: Row(
+  //           children: [
+  //             Icon(Icons.lock, color: Colors.orange),
+  //             SizedBox(width: 10),
+  //             Text('Login'),
+  //           ],
+  //         ),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             TextField(
+  //               decoration: InputDecoration(
+  //                 labelText: 'Email',
+  //                 prefixIcon: Icon(Icons.email),
+  //                 border: OutlineInputBorder(),
+  //               ),
+  //             ),
+  //             SizedBox(height: 15),
+  //             TextField(
+  //               obscureText: true,
+  //               decoration: InputDecoration(
+  //                 labelText: 'Kata Sandi',
+  //                 prefixIcon: Icon(Icons.lock),
+  //                 border: OutlineInputBorder(),
+  //               ),
+  //             ),
+  //             SizedBox(height: 15),
+  //             ElevatedButton(
+  //               style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: Text('Masuk'),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {},
+  //               child: Text('Lupa kata sandi kamu?'),
+  //             ),
+  //             Divider(),
+  //             ElevatedButton.icon(
+  //               icon: Icon(Icons.account_circle),
+  //               label: Text('Masuk dengan Google'),
+  //               onPressed: () {},
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +156,14 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {},
             ),
             GestureDetector(
-              onTap: () => _showLoginDialog(context),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginPage(),
+                  ),
+                );
+              },
               child: CircleAvatar(
                 backgroundColor: Colors.blue,
                 child: GestureDetector(
